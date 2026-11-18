@@ -12,29 +12,32 @@
 <script type="importmap">{"imports":{"three":"/vendor/three.module.min.js"}}</script>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <span class="eyebrow">Left knee recovery · injured Nov 7, 2026</span>
-    <div class="row" style="justify-content:space-between">
-      <div class="brand">
+<div class="appbar"><button type="button" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="side">☰</button><span id="appbar-title">Shield Battery</span><a href="/logout" class="note">Lock</a></div>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="side" id="side">
+  <div class="side-top">
+    <div class="brand">
         <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 42 10v13c0 11-8 19-18 22C14 42 6 34 6 23V10z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M26 13 17 26h7l-2 9 9-13h-7z" fill="currentColor"/></svg>
         <h1>Shield Battery</h1>
       </div>
-      <div class="whoami"><span id="who-label">Not signed in to edit</span><button id="who-change">Change name</button><a href="/logout" class="note">Lock</a></div>
-    </div>
-    <span class="live" id="live">Loading…</span>
-  </header>
-
+    <span class="eyebrow">Left knee recovery · injured Nov 7, 2026</span>
+  </div>
   <nav class="tabs" aria-label="Sections">
     <a href="#home" data-tab="home">🏠 Home</a>
     <a href="#tasks" data-tab="tasks">✅ Tasks</a>
     <a href="#calls" data-tab="calls">☎️ Calls</a>
     <a href="#money" data-tab="money">💵 Money</a>
     <a href="#rehab" data-tab="rehab">🦵 Rehab</a>
+    <a href="#knee" data-tab="knee">🦴 3D Knee</a>
     <a href="#record" data-tab="record">🩺 Record</a>
     <a href="#log" data-tab="log">🗓️ Date Log</a>
   </nav>
-
+  <div class="side-foot">
+    <div class="whoami"><span id="who-label">Not signed in to edit</span><button id="who-change">Change name</button><a href="/logout" class="note">Lock</a></div>
+    <span class="live" id="live">Loading…</span>
+  </div>
+</aside>
+<div class="wrap">
   <!-- HOME -->
   <section class="view" id="v-home" data-view="home">
     <div class="banner crit" id="deadline"></div>
@@ -216,10 +219,20 @@
       <div id="appts"></div>
     </div>
 
-    <div class="card">
+    <div class="card"><h2>🦴 Your knee in 3D</h2><p class="note">Open the glowing 3D knee, watch the tendon tear in slow motion, and try the "fix my knee" surgery game.</p><a class="btn" href="#knee">Open the 3D knee →</a></div>
+
+    <div class="card"><h2>🗓️ Recovery clock</h2><div class="timeline" id="timeline"></div>
+      <p class="note">The "6 months no bending" restriction was only said out loud. Ask Dr. Levy to write it down at the follow-up.</p></div>
+  </section>
+
+  <!-- 3D KNEE -->
+  <section class="view" id="v-knee" data-view="knee" hidden>
+    <div class="card kneecard">
       <h2>🦴 Your knee in 3D</h2>
-      <p class="note">Drag to turn, pinch or scroll to zoom. Tap the glowing orange tendon to watch how it tore, then press <b>Do my surgery</b> to fix it yourself. Use the checkboxes to hide layers, and bend the knee with the slider. This is a teaching model, not your scan.</p>
-      <div class="leg-ui" id="leg-ui">
+      <p class="note">Drag to turn, pinch or scroll to zoom. Tap the glowing orange tendon to watch how it tore, then press <b>Do my surgery</b> to fix it yourself. Hide layers with the checkboxes and bend the knee with the slider. This is a teaching model, not your scan.</p>
+      <div class="knee-layout">
+        <div class="leg-wrap" id="leg-wrap"><div class="leg-tag" id="leg-tag">Loading 3D model…</div></div>
+        <div class="leg-ui" id="leg-ui">
         <label><input type="checkbox" data-layer="skin" checked> Skin</label>
         <label><input type="checkbox" data-layer="muscle" checked> Muscle</label>
         <label><input type="checkbox" data-layer="tendon" checked> Tendons</label>
@@ -228,12 +241,9 @@
         <label>Bend <input type="range" id="leg-bend" min="0" max="120" value="0"> <span id="leg-bend-val" class="mono">0°</span></label>
         <label class="btn" style="cursor:pointer">Add X-ray image<input type="file" id="leg-xray" accept="image/*" hidden></label>
       </div>
-      <div class="leg-wrap" id="leg-wrap"><div class="leg-tag" id="leg-tag">Loading 3D model…</div></div>
+      </div>
       <p class="note">Bones and muscles: BodyParts3D © DBCLS (CC BY 4.0), simplified. The X-ray image only shows on this device and isn't uploaded. Once the DICOM files arrive, they can be converted and lined up here.</p>
     </div>
-
-    <div class="card"><h2>🗓️ Recovery clock</h2><div class="timeline" id="timeline"></div>
-      <p class="note">The "6 months no bending" restriction was only said out loud. Ask Dr. Levy to write it down at the follow-up.</p></div>
   </section>
 
   <section class="view" id="v-record" data-view="record" hidden>

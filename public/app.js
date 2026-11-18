@@ -382,7 +382,7 @@ $("#a-add").addEventListener("click", () => {
 // The bend slider follows the rehab "bend allowed" field only until someone moves it.
 
 // ---------- routing ----------
-const VIEWS = ["home", "tasks", "calls", "money", "rehab", "record", "log"];
+const VIEWS = ["home", "tasks", "calls", "money", "rehab", "knee", "record", "log"];
 let currentView = "home";
 function route() {
   const h = location.hash.slice(1); currentView = VIEWS.includes(h) ? h : "home";
@@ -390,6 +390,9 @@ function route() {
   document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.dataset.tab === currentView ? "page" : "false"));
   if (currentView === "log") renderLog();
   if (currentView === "rehab") window.dispatchEvent(new Event("sb:rehab-open"));
+  if (currentView === "knee") window.dispatchEvent(new Event("sb:knee-open"));
+  const cur = document.querySelector(`nav.tabs a[data-tab="${currentView}"]`), tt = document.getElementById("appbar-title"); if (tt && cur) tt.textContent = cur.textContent.trim();
+  closeMenu();
 }
 window.addEventListener("hashchange", () => { route(); window.scrollTo(0, 0); });
 
@@ -402,3 +405,9 @@ load(true).then(() => fetchLog().then(renderHomeLog));
 setInterval(() => { if (!document.hidden) { load(false); fetchLog().then(() => { renderHomeLog(); }); } }, 15000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) load(false); });
 })();
+
+// ---------- SIDEBAR / PHONE MENU ----------
+function closeMenu() { const sd = document.getElementById("side"), sc = document.getElementById("scrim"), mb = document.getElementById("menu-btn"); if (!sd) return; sd.classList.remove("open"); if (sc) sc.hidden = true; if (mb) mb.setAttribute("aria-expanded", "false"); }
+document.getElementById("menu-btn")?.addEventListener("click", () => { const sd = document.getElementById("side"), open = !sd.classList.contains("open"); sd.classList.toggle("open", open); document.getElementById("scrim").hidden = !open; document.getElementById("menu-btn").setAttribute("aria-expanded", String(open)); });
+document.getElementById("scrim")?.addEventListener("click", closeMenu);
+window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
