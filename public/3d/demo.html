@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knee 3D demo</title>
+<link rel="stylesheet" href="/styles.css">
+<!-- Same import map as the site. -->
+<script type="importmap">{"imports":{"three":"/vendor/three.module.min.js"}}</script>
+</head><body><div class="wrap"><div class="card">
+<h2>🦴 Your knee in 3D</h2>
+<div class="leg-ui" id="leg-ui">
+<label><input type="checkbox" data-layer="skin" checked> Skin</label>
+<label><input type="checkbox" data-layer="muscle" checked> Muscle</label>
+<label><input type="checkbox" data-layer="tendon" checked> Tendons</label>
+<label><input type="checkbox" data-layer="bone" checked> Bone</label>
+<label><input type="checkbox" data-layer="implant" checked> Implants</label>
+<label>Bend <input type="range" id="leg-bend" min="0" max="120" value="0"> <span id="leg-bend-val" class="mono">0°</span></label>
+<label class="btn" style="cursor:pointer">Add X-ray image<input type="file" id="leg-xray" accept="image/*" hidden></label>
+</div>
+<div class="leg-wrap" id="leg-wrap"><div class="leg-tag" id="leg-tag">Loading 3D model…</div></div>
+</div></div>
+<script type="module">
+import { mountKnee } from "/3d/knee.js";
+window.knee = mountKnee(document.getElementById("leg-wrap"));
+</script></body></html>

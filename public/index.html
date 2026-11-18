@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Shield Battery</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 3 42 10v13c0 11-8 19-18 22C14 42 6 34 6 23V10z' fill='%230f5f73'/%3E%3Cpath d='M26 13 17 26h7l-2 9 9-13h-7z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<script type="importmap">{"imports":{"three":"/vendor/three.module.min.js"}}</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Left knee recovery · injured Nov 7, 2026</span>
+    <div class="row" style="justify-content:space-between">
+      <div class="brand">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 42 10v13c0 11-8 19-18 22C14 42 6 34 6 23V10z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M26 13 17 26h7l-2 9 9-13h-7z" fill="currentColor"/></svg>
+        <h1>Shield Battery</h1>
+      </div>
+      <div class="whoami"><span id="who-label">Not signed in to edit</span><button id="who-change">Change name</button><a href="/logout" class="note">Lock</a></div>
+    </div>
+    <span class="live" id="live">Loading…</span>
+  </header>
+
+  <nav class="tabs" aria-label="Sections">
+    <a href="#home" data-tab="home">🏠 Home</a>
+    <a href="#tasks" data-tab="tasks">✅ Tasks</a>
+    <a href="#calls" data-tab="calls">☎️ Calls</a>
+    <a href="#money" data-tab="money">💵 Money</a>
+    <a href="#rehab" data-tab="rehab">🦵 Rehab</a>
+    <a href="#record" data-tab="record">🩺 Record</a>
+    <a href="#log" data-tab="log">🗓️ Date Log</a>
+  </nav>
+
+  <!-- HOME -->
+  <section class="view" id="v-home" data-view="home">
+    <div class="banner crit" id="deadline"></div>
+    <div class="tiles" id="home-tiles"></div>
+    <div class="grid2">
+      <div class="card"><h2>Next up</h2><div id="home-next"></div><a href="#tasks" class="note">All tasks →</a></div>
+      <div class="card"><h2>Recent activity</h2><div id="home-log"></div><a href="#log" class="note">Full Date Log →</a></div>
+    </div>
+  </section>
+
+  <!-- TASKS -->
+  <section class="view" id="v-tasks" data-view="tasks" hidden>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2>Tasks by priority</h2><span class="sub mono" id="progress"></span></div>
+      <div class="legend">
+        <span><b>Effort</b> <span class="dots">●○○○○</span> light → <span class="dots">●●●●●</span> heavy</span>
+        <span><span class="chip req">Required</span> money or health at stake</span>
+        <span><span class="chip rec">Recommended</span> real upside</span>
+        <span><span class="chip opt">Optional</span> if time allows</span>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Filter by type"></div>
+    </div>
+    <div id="tasklist" style="display:flex;flex-direction:column;gap:10px"></div>
+  </section>
+
+  <!-- CALLS -->
+  <section class="view" id="v-calls" data-view="calls" hidden>
+    <div class="card">
+      <h2>☎️ Who are you calling?</h2>
+      <label class="f">Pick the office and everything for that call appears below<select id="c-org"></select></label>
+      <div id="c-card" style="display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+    <div class="card">
+      <h2>🗒️ Log this call</h2>
+      <div class="formgrid">
+        <label class="f">Rep name<input id="c-rep" placeholder="first name / ID"></label>
+        <label class="f">Reference #<input id="c-ref" class="fill" placeholder="ticket, claim, confirmation"></label>
+        <label class="f">Follow up by<input type="date" id="c-due"></label>
+      </div>
+      <label class="f">What happened<textarea id="c-notes" rows="3" placeholder="What they said, what's next"></textarea></label>
+      <div class="row"><button class="primary" id="c-add">Save call</button><span class="note" id="c-msg"></span></div>
+    </div>
+    <div class="card"><h2>Call history</h2><div id="calls"></div></div>
+    <div class="card"><span class="eyebrow">Say this first on any call</span><div class="script" id="opener"></div>
+      <p class="note">Tap any number or ID to copy it. Dashed boxes are blanks; whatever anyone types there saves for everyone.</p></div>
+    <div class="grid2">
+      <div class="card"><h2>🦵 Injury &amp; stay</h2>
+        <dl class="kv">
+          <dt>Date of injury</dt><dd class="mono">Sat, Nov 7, 2026</dd>
+          <dt>Time of injury</dt><dd><input class="fill" data-field="injuryTime" placeholder="e.g. 10:30 AM"></dd>
+          <dt>Where</dt><dd>Basketball court, school district game (officiating)</dd>
+          <dt>School / venue</dt><dd><input class="fill" data-field="venue" placeholder="School name"></dd>
+          <dt>How</dt><dd>Collision / accidental contact with a player while refereeing</dd>
+          <dt>Injury</dt><dd>Complete left patellar tendon rupture, inferior pole of patella</dd>
+          <dt>ER intake</dt><dd class="mono">Nov 7 · 12:52 PM · ER Grand Prairie</dd>
+          <dt>Surgery</dt><dd class="mono">Nov 8 · open repair · Dr. Brandon Levy</dd>
+          <dt>Discharged</dt><dd class="mono">Nov 9 · vitals 11:55 AM</dd>
+          <dt>Encounter ID</dt><dd><button class="num" data-copy="I00985835910">I00985835910</button></dd>
+          <dt>Implants</dt><dd>2× Smith &amp; Nephew Q-Fix 2.8 mm anchors · 1× Regeneten (large)</dd>
+        </dl>
+      </div>
+      <div class="card"><h2>🛡️ Insurance</h2>
+        <dl class="kv">
+          <dt>Primary</dt><dd>None at time of injury</dd>
+          <dt>Secondary / excess</dt><dd>Mutual of Omaha · NFHS Coaches &amp; Officials Accident Medical</dd>
+          <dt>Policy #</dt><dd><button class="num" data-copy="SR201IN-P-054461">SR201IN-P-054461</button></dd>
+          <dt>Claim #</dt><dd><input class="fill" data-field="claimNo" placeholder="after you submit"></dd>
+          <dt>Coverage</dt><dd class="mono">Jul 1, 2026 – Jul 1, 2027</dd>
+          <dt>Max benefit</dt><dd class="mono">$50,000 · 52-week benefit period</dd>
+          <dt>Deductible</dt><dd class="mono">$250 (disappearing)</dd>
+          <dt>PT</dt><dd class="mono">$50/day · max 40 days · 1 treatment/day</dd>
+          <dt>DME / Rx</dt><dd class="mono">$1,000 max each</dd>
+          <dt>Claim deadline</dt><dd class="mono" style="color:var(--crit);font-weight:600">~Mon, Dec 7, 2026 (30 days)</dd>
+        </dl>
+      </div>
+      <div class="card"><h2>💳 Billing IDs</h2>
+        <dl class="kv">
+          <dt>Hospital acct #</dt><dd><input class="fill" data-field="acctNo" placeholder="call billing 469-420-7000"></dd>
+          <dt>Guarantor #</dt><dd><input class="fill" data-field="guarantorNo" placeholder="call billing 469-420-7000"></dd>
+          <dt>Balance</dt><dd><input class="fill" data-field="balance" placeholder="$"></dd>
+          <dt>One account or two?</dt><dd><input class="fill" data-field="acctSplit" placeholder="ER GP + Arlington: single / separate"></dd>
+          <dt>Datavant tracking #</dt><dd><input class="fill" data-field="datavantNo" placeholder="after you sign"></dd>
+          <dt>Bills go to</dt><dd>Mutual of Omaha fax <button class="num" data-copy="402-351-4732">402-351-4732</button></dd>
+        </dl>
+      </div>
+      <div class="card"><h2>🏀 Officiating &amp; work</h2>
+        <dl class="kv">
+          <dt>Assignor name</dt><dd><input class="fill" data-field="assignorName" placeholder="FWBOA assignor"></dd>
+          <dt>Assignor phone</dt><dd><input class="fill" data-field="assignorPhone" placeholder="phone / email"></dd>
+          <dt>Licenses</dt><dd>THSBOA / FWBOA / NFHS official (2025–present)</dd>
+          <dt>Last employer</dt><dd>Atlas Title Company · Escrow Assistant</dd>
+          <dt>Dates</dt><dd class="row"><input class="fill" data-field="atlasStart" placeholder="first day (Feb 2026)" style="flex:1 1 120px"><input class="fill" data-field="atlasEnd" placeholder="last day (Oct 2026)" style="flex:1 1 120px"></dd>
+          <dt>Atlas address / phone</dt><dd><input class="fill" data-field="atlasAddr" placeholder="from pay stub or W-2"></dd>
+          <dt>Pay rate / hours</dt><dd><input class="fill" data-field="atlasWage" placeholder="$/hr · hrs/wk · pay frequency"></dd>
+          <dt>Atlas HQ</dt><dd><button class="num" data-copy="888-809-9714">888-809-9714</button> <span class="note">Irvine, CA</span></dd>
+        </dl>
+      </div>
+    </div>
+    <div class="card"><h2>📇 Every contact</h2><div id="contacts" class="grid2"></div></div>
+  </section>
+
+  <!-- MONEY -->
+  <section class="view" id="v-money" data-view="money" hidden>
+    <div class="tiles" id="money-tiles"></div>
+    <div class="card">
+      <h2>➕ Add money in or out</h2>
+      <div class="formgrid">
+        <label class="f">Date<input type="date" id="m-date"></label>
+        <label class="f">Direction<select id="m-dir"><option value="out">Money out (bill / expense)</option><option value="in">Money in (payment / help)</option></select></label>
+        <label class="f">Category<select id="m-cat"></select></label>
+        <label class="f">Who / from<input id="m-party" placeholder="e.g. Medical City, CVS, Mom"></label>
+        <label class="f">Amount ($)<input id="m-amt" inputmode="decimal" placeholder="0.00"></label>
+        <label class="f">Status<select id="m-status"></select></label>
+      </div>
+      <label class="f">Note<input id="m-note" placeholder="Invoice #, what it covers, receipt saved?"></label>
+      <div class="row"><button class="primary" id="m-add">Add entry</button><span class="note" id="m-msg"></span></div>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h2>Ledger</h2>
+        <div class="filters" id="m-filters"></div></div>
+      <div id="money-list"></div>
+      <p class="note">"Send to insurer" marks bills and receipts Mutual of Omaha should see. Policy limits: $50,000 total, $1,000 equipment, $1,000 prescriptions, PT $50/day for 40 days.</p>
+    </div>
+  </section>
+
+  <!-- REHAB -->
+  <section class="view" id="v-rehab" data-view="rehab" hidden>
+    <div class="grid2">
+      <div class="card">
+        <span class="eyebrow">Rehab status</span>
+        <label class="f">Where things stand<select data-field="rehabStatus" id="rehab-status">
+          <option value="">Pick a stage</option>
+          <option>Brace locked straight (first 2 weeks)</option>
+          <option>Brace unlocking, limited bend</option>
+          <option>PT started</option>
+          <option>Walking without walker</option>
+          <option>Walking without brace</option>
+          <option>Strength and return-to-activity</option>
+          <option>Cleared by Dr. Levy</option>
+        </select></label>
+        <label class="f">Status note<input class="fill" data-field="rehabNote" placeholder="e.g. 30° bend allowed, icing 3×/day"></label>
+        <label class="f">Knee bend allowed (degrees)<input class="fill" data-field="bendAllowed" inputmode="numeric" placeholder="0"></label>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Mutual of Omaha PT benefit</span>
+        <h2>PT days used</h2>
+        <div class="row" style="align-items:baseline"><span class="bignum" id="pt-used">0</span><span class="sub">of 40 days · $50/day</span></div>
+        <div class="meter" aria-hidden="true"><i id="pt-bar" style="width:0%"></i></div>
+        <p class="note" id="pt-money"></p>
+        <p class="note">Counts PT appointments marked Done, one per day.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="eyebrow">Next appointment</span>
+      <h2>Dr. Levy post-op follow-up</h2>
+      <p class="note">Discharge said "follow up in 2 weeks", so about <b>Mon, Nov 23</b>. Put the confirmed date here.</p>
+      <div class="formgrid">
+        <label class="f">Date<input type="date" data-field="fuDate"></label>
+        <label class="f">Time<input type="time" data-field="fuTime"></label>
+      </div>
+      <dl class="kv"><dt>Office</dt><dd>3125 Matlock Rd, Arlington, TX 76015</dd><dt>Phone</dt><dd><button class="num" data-copy="877-314-8990">877-314-8990</button></dd></dl>
+      <div id="fu-count" class="note"></div>
+    </div>
+
+    <div class="card"><h2>❓ Ask at the follow-up</h2><ol class="steps" id="fu-questions"></ol></div>
+
+    <div class="card">
+      <h2>📅 Appointments</h2>
+      <div class="formgrid">
+        <label class="f">Date<input type="date" id="a-date"></label>
+        <label class="f">Time<input type="time" id="a-time"></label>
+        <label class="f">Type<select id="a-type"><option>PT session</option><option>Dr. Levy</option><option>Other doctor</option><option>Imaging / lab</option><option>Benefits / office visit</option></select></label>
+        <label class="f">Where / who<input id="a-where" placeholder="e.g. Medical City Outpatient Therapy"></label>
+        <label class="f">Ride / helper<input id="a-ride" placeholder="Who's driving?"></label>
+      </div>
+      <label class="f">Notes<input id="a-notes" placeholder="What to bring, homework, results"></label>
+      <div class="row"><button class="primary" id="a-add">Add appointment</button><span class="note" id="a-msg"></span></div>
+      <div id="appts"></div>
+    </div>
+
+    <div class="card">
+      <h2>🦴 Your knee in 3D</h2>
+      <p class="note">Drag to turn, pinch or scroll to zoom. Toggle layers and bend the knee. Red marks the torn patellar tendon; the silver dots are the two Q-Fix anchors. This is a teaching model, not your scan.</p>
+      <div class="leg-ui" id="leg-ui">
+        <label><input type="checkbox" data-layer="skin" checked> Skin</label>
+        <label><input type="checkbox" data-layer="muscle" checked> Muscle</label>
+        <label><input type="checkbox" data-layer="tendon" checked> Tendons</label>
+        <label><input type="checkbox" data-layer="bone" checked> Bone</label>
+        <label><input type="checkbox" data-layer="implant" checked> Implants</label>
+        <label>Bend <input type="range" id="leg-bend" min="0" max="120" value="0"> <span id="leg-bend-val" class="mono">0°</span></label>
+        <label class="btn" style="cursor:pointer">Add X-ray image<input type="file" id="leg-xray" accept="image/*" hidden></label>
+      </div>
+      <div class="leg-wrap" id="leg-wrap"><div class="leg-tag" id="leg-tag">Loading 3D model…</div></div>
+      <p class="note">The X-ray image only shows on this device and isn't uploaded. Once the DICOM files arrive, they can be converted and lined up here.</p>
+    </div>
+
+    <div class="card"><h2>🗓️ Recovery clock</h2><div class="timeline" id="timeline"></div>
+      <p class="note">The "6 months no bending" restriction was only said out loud. Ask Dr. Levy to write it down at the follow-up.</p></div>
+  </section>
+
+  <section class="view" id="v-record" data-view="record" hidden>
+    <div class="card">
+      <h2>⚠️ Record conflicts to fix</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>#</th><th>Issue</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">C1</td><td>Admission date shows Nov 8 in portal, but ER intake, labs and X-ray are Nov 7, 12:52 PM</td><td>Use Nov 7 as date of injury and first care. Mention both if asked.</td></tr>
+          <tr><td class="mono">C2</td><td>"Other fracture of left lower leg" and "left ankle fracture" listed, but X-ray shows no fracture and surgery was tendon only</td><td>Ask Dr. Levy at follow-up. Insurer may question it.</td></tr>
+          <tr><td class="mono">C3</td><td>BP 186/87 at discharge. Amlodipine 10 mg started inpatient, missing from discharge list</td><td>Ask Dr. Levy or a primary doctor whether to take it.</td></tr>
+          <tr><td class="mono">C4</td><td>"Brace locked 2 weeks" (written) vs "6 months no bending" (verbal)</td><td>Get the real restriction in writing at follow-up.</td></tr>
+          <tr><td class="mono">C5</td><td>Portal says "PATELLER TESOON RUPTURE"</td><td>Portal typo for patellar tendon rupture. No action.</td></tr>
+        </tbody></table></div>
+    </div>
+
+    <details class="card fold"><summary>🏥 Facilities &amp; care team</summary>
+      <dl class="kv">
+        <dt>ER Grand Prairie</dt><dd>5203 Lake Ridge Pkwy, Grand Prairie, TX 75052 · <span class="mono">682-218-5400</span> · department of Medical City Arlington</dd>
+        <dt>Medical City Arlington</dt><dd>3301 Matlock Rd, Arlington, TX 76015 · <span class="mono">682-509-6200</span></dd>
+        <dt>Lead surgeon</dt><dd>Dr. Brandon Levy (orthopedics)</dd>
+        <dt>Surgical assist</dt><dd>Dr. Kyle O'Connor (also consult 11/08) · PA Leonard Robinson</dd>
+        <dt>Ortho progress</dt><dd>Dr. Caleb Shin (11/09)</dd>
+        <dt>Attending</dt><dd>Dr. Yanjuan Zhu (discharge summary)</dd>
+        <dt>Internal medicine</dt><dd>Dr. Rasha Alaameri (11/08)</dd>
+        <dt>Radiology</dt><dd>Dr. Brian Cermak · Dr. Martin Sigler (11/07)</dd>
+        <dt>Prior visit</dt><dd>Jan 11, 2026 · Medical City Arlington · "INJURY" (relevance unverified)</dd>
+      </dl>
+    </details>
+
+    <details class="card fold"><summary>🔪 Surgery details (Nov 8)</summary>
+      <dl class="kv">
+        <dt>Procedure</dt><dd>Open repair of left patellar tendon rupture</dd>
+        <dt>Anesthesia</dt><dd>General + local · Esmarch · tourniquet 250 mmHg</dd>
+        <dt>Findings</dt><dd>Proximal tear at inferior pole, mop-end and retracted; extensive medial/lateral retinacular and capsular disruption</dd>
+        <dt>Repair</dt><dd>Inferior pole debrided to bleeding bone; 2 × 2.8 mm Q-Fix anchors in patella; sliding Krakow stitches medial/lateral; large Regeneten collagen implant, running Vicryl</dd>
+        <dt>Blood loss</dt><dd class="mono">~10 mL</dd>
+        <dt>Implant lot / UDI</dt><dd><input class="fill" data-field="udi" placeholder="from HIM implant log"></dd>
+      </dl>
+    </details>
+
+    <details class="card fold"><summary>💊 Medications</summary>
+      <h3>Discharge prescriptions</h3>
+      <div class="tablewrap"><table><thead><tr><th>Drug</th><th>Dose</th><th>How often</th><th>For</th></tr></thead><tbody>
+        <tr><td>Aspirin</td><td class="mono">81 mg</td><td>Twice daily × 42 days (to ~Dec 21)</td><td>Blood-clot prevention</td></tr>
+        <tr><td>Hydrocodone / acetaminophen</td><td class="mono">5-325 mg</td><td>Every 4 h as needed × 5 days, max 8/day</td><td>Severe pain</td></tr>
+        <tr><td>Multivitamin</td><td></td><td>Daily</td><td></td></tr>
+      </tbody></table></div>
+      <p class="note warn">Amlodipine 10 mg daily (blood pressure) was started in hospital but isn't on this list. Ask about it.</p>
+      <details class="fold"><summary>Inpatient orders (20)</summary>
+        <p class="note">Cefazolin 2000 mg IV q8h · Hydralazine 10 mg IV PRN · Amlodipine 10 mg PO daily · Acetaminophen 500 mg q6h · Methocarbamol 500 mg TID · Morphine 2 mg IV PRN · Enoxaparin 40 mg SubQ daily · Thiamine 100 mg · Folic acid 1 mg · Multivitamin · Lorazepam PRN · Magnesium sulfate 2000 mg IV PRN · Melatonin · Diphenhydramine · Docusate · Polyethylene glycol · Simethicone · Calcium carbonate · Mag hydroxide/Al/simethicone · Sodium/potassium phosphate. Orders only, not proof each was given.</p>
+      </details>
+    </details>
+
+    <details class="card fold"><summary>🧪 Labs (Nov 7) &amp; imaging</summary>
+      <div class="tablewrap"><table><thead><tr><th>Test</th><th>Value</th><th>Flag</th></tr></thead><tbody id="labs"></tbody></table></div>
+      <p class="note"><b>X-ray left knee, 3 views (Nov 7, ER Grand Prairie):</b> no acute fracture or dislocation, joint spaces preserved, no effusion. Exam and ortho review still found patella alta and the tendon rupture. Images (DICOM) not in portal yet.</p>
+      <p class="note"><b>Vitals.</b> Intake Nov 7, 12:52 PM: 6 ft 4 in, 230 lb 8 oz. Pre-discharge Nov 9, 11:55 AM: BP 186/87, HR 59, SpO₂ 100%, RR 16, 36.9 °C.</p>
+    </details>
+
+    <details class="card fold"><summary>📋 Injury-related diagnoses</summary>
+      <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">
+        <li>Left patellar tendon rupture, status post repair <span class="chip">confirmed</span></li>
+        <li>Strain of left quadriceps muscle, fascia and tendon, initial encounter</li>
+        <li>Other fracture of left lower leg, closed <span class="chip req">conflict C2</span></li>
+        <li>Left ankle fracture, post-op day 1 <span class="chip req">conflict C2</span></li>
+        <li>Hypertensive urgency (blood pressure during stay)</li>
+        <li>External cause: basketball, basketball court, struck by another person</li>
+      </ul>
+    </details>
+
+    <details class="card fold"><summary>📤 Discharge instructions</summary>
+      <ul style="margin:0;padding-left:18px">
+        <li>Weight-bear as tolerated on left leg</li>
+        <li>Hinged knee brace locked in extension × 2 weeks (to ~Nov 23)</li>
+        <li>Walker (patient-owned)</li>
+        <li>Cold pack and elevation</li>
+        <li>Follow up with Dr. Levy in 2 weeks · 877-314-8990</li>
+        <li>PT logged: gait training with assistive equipment (Nov 9)</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- DATE LOG -->
+  <section class="view" id="v-log" data-view="log" hidden>
+    <div class="card">
+      <h2>🗓️ Date Log</h2>
+      <p class="note">Every saved change, who made it and when. Undo puts the old value back and adds its own line here.</p>
+      <div id="log"></div>
+    </div>
+  </section>
+</div>
+
+<div class="modal-back" id="name-modal" hidden>
+  <form class="modal" id="name-form">
+    <h2>Who's making this change?</h2>
+    <p class="note">Your name goes in the Date Log next to what you change.</p>
+    <input id="name-input" placeholder="Your name" autocomplete="name" required maxlength="60">
+    <div class="row"><button type="submit" class="primary">Save change</button><button type="button" id="name-cancel">Cancel</button></div>
+  </form>
+</div>
+<div class="toast" id="toast" hidden role="status"><span class="msg" id="toast-msg"></span><button id="toast-undo">Undo</button><button class="x" id="toast-x" aria-label="Close">✕</button></div>
+
+<script src="/data.js"></script>
+<script src="/app.js"></script>
+<script type="module" src="/leg.js"></script>
+</body>
+</html>

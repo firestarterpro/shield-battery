@@ -1,0 +1,13 @@
+{
+  // Shield Battery: worker + static site + D1 database.
+  "name": "shield-battery",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
+  "d1_databases": [
+    // database_id is filled in after: npx wrangler d1 create shield-battery
+    { "binding": "DB", "database_name": "shield-battery", "database_id": "00000000-0000-0000-0000-000000000000" }
+  ],
+  "vars": { "SITE_PASSWORD": "Dunnage" },
+  // routes added at deploy
+}

@@ -1,0 +1,16 @@
+{
+  "name": "shield-battery",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Family medical, claims, money and rehab tracker",
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:init": "wrangler d1 execute shield-battery --remote --file=schema.sql",
+    "db:init:local": "wrangler d1 execute shield-battery --local --file=schema.sql",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.40.0",
+    "three": "0.170.0"
+  }
+}
