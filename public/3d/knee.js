@@ -326,6 +326,15 @@ export function mountKnee(container, opts = {}) {
         }
       }
     }
+    const chip = document.createElement("button"); chip.type = "button"; chip.className = "k-chip"; ov.appendChild(chip);
+    chip.addEventListener("click", () => { if (S.tear >= SNAP) startGame(); else playTear(); });
+    function placeChip() {
+      const show = layerOn.fx && !G.active && !anim; chip.style.display = show ? "block" : "none"; if (!show) return;
+      const torn = S.tear >= SNAP; const t = torn ? "🛠️ Fix it: do my surgery" : "👆 Tap to break the tendon"; if (chip.textContent !== t) chip.textContent = t;
+      const W = container.clientWidth, H = container.clientHeight; pg.localToWorld(tmpV.set(0, -4.5, 1.5)); tmpV.project(camera);
+      const x = (tmpV.x * 0.5 + 0.5) * W, y = (-tmpV.y * 0.5 + 0.5) * H, w = chip.offsetWidth || 150;
+      chip.style.left = Math.max(6, Math.min(W - w - 6, x - w / 2)) + "px"; chip.style.top = Math.min(H - 70, y + 34) + "px";
+    }
     const injLab = lab.find((l) => l.L.id === "ptendon");
     injLab.el.style.pointerEvents = "auto"; injLab.el.style.cursor = "pointer"; injLab.el.addEventListener("click", () => playTear());
 
@@ -419,7 +428,7 @@ export function mountKnee(container, opts = {}) {
     function startGame() {
       G.active = true; G.step = 0; G.anch = [false, false]; G.snapped = false; G.patch = false; G.done = false; anim = null; S.tear = 1; S.bend = 0; syncBend();
       setLayer("muscle", false); setCheck("muscle", false);
-      camTo(V3(52, 3, -9), V3(0, 0, 0)); pose(false); say("🩺 Surgery time!");
+      camTo(V3(52, 1, -9), V3(0, -5, 0)); pose(false); say("🩺 Surgery time!");
       html(`<b>🩺 Welcome, Doctor!</b> Today's patient is one very brave knee. The tendon holding the kneecap to the shin has snapped. We'll fix it in 4 easy steps.<div class="k-row"><button data-k="go" class="k-go">I'm scrubbed in! ▶</button><button data-k="quit">Not now</button></div><small>Just a teaching game, not medical advice.</small>`);
     }
     const STEPS = {
@@ -485,7 +494,8 @@ export function mountKnee(container, opts = {}) {
     container.addEventListener("pointerup", (e) => {
       if (drag) { const near = handle.position.distanceTo(targetOf(G.step)) < 2.6; endDrag(); if (near) snap(); return; }
       if (down && !G.active && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 7 && performance.now() - down.t < 600) {
-        toNdc(e); if (ray.intersectObjects([pick, band, tStub], false).length || ray.intersectObject(glow, false).length) playTear();
+        toNdc(e); const rc = renderer.domElement.getBoundingClientRect(); tmpV.copy(pole3).project(camera); const px = rc.left + (tmpV.x * 0.5 + 0.5) * rc.width, py = rc.top + (-tmpV.y * 0.5 + 0.5) * rc.height;
+        if (S.tear < SNAP && (Math.hypot(e.clientX - px, e.clientY - py) < 70 || ray.intersectObjects([pick, band, tStub, patella], false).length || ray.intersectObject(glow, false).length)) playTear();
       }
       down = null;
     });
@@ -523,7 +533,7 @@ export function mountKnee(container, opts = {}) {
       const tip = G.snapped ? pole3 : handle.position;
       sutLine.forEach((s, i) => { const on = G.active && G.anch[i] && G.step >= 3 && G.step <= 5 || (G.active && G.anch[i] && G.step === 3); s.visible = on; if (on) seg(s, pg.localToWorld(V3(0.1, -2.5, i ? 1 : -1)), tip.clone().add(V3(0, 0, i ? 0.6 : -0.6)), 0.06, 0.06); });
       if (showGT()) seg(gTendon, T3, G.snapped ? pole3 : handle.position, 0.8, 0.8);
-      layoutLabels(); controls.update(); renderer.render(scene, camera); raf = requestAnimationFrame(loop);
+      layoutLabels(); placeChip(); controls.update(); renderer.render(scene, camera); raf = requestAnimationFrame(loop);
     }
     function syncBend() { const b = container.ownerDocument.querySelector("#leg-bend"), bv = container.ownerDocument.querySelector("#leg-bend-val"); if (b) b.value = S.bend; if (bv) bv.textContent = S.bend + "°"; }
     function setCheck(name, v) { const c = container.ownerDocument.querySelector(`[data-layer="${name}"]`); if (c) c.checked = v; }
@@ -581,9 +591,10 @@ function injectStyle() {
   .k-lines line.inj{stroke:#ff7a3a;stroke-width:1.6}.k-lines circle.inj{fill:#ff5a1a}
   .k-lab{position:absolute;color:#e6f2ff;font:600 11.5px/1.2 system-ui,sans-serif;text-shadow:0 0 6px #000,0 0 3px #000;padding:2px 3px;background:rgba(5,12,30,.45);border-radius:4px}
   .k-lab small{display:block;font-weight:400;font-size:9.5px;opacity:.75;font-style:italic}.k-lab.inj{color:#ffd0a8;border:1px solid #ff7a3a;background:rgba(60,15,5,.6)}
+  .k-chip{position:absolute;pointer-events:auto;cursor:pointer;background:#ff6a1a;color:#fff;border:1px solid #ffb27a;border-radius:20px;padding:7px 12px;font:700 12.5px system-ui,sans-serif;box-shadow:0 0 16px rgba(255,106,26,.8);animation:kpulse 1.4s infinite;white-space:nowrap}@keyframes kpulse{50%{transform:scale(1.07);box-shadow:0 0 26px rgba(255,140,60,1)}}
   .k-hud{position:absolute;width:26px;height:26px;border:2px solid rgba(90,200,255,.7)}.k-hud.tl{left:6px;top:6px;border-right:0;border-bottom:0}.k-hud.br{right:6px;bottom:6px;border-left:0;border-top:0}
-  .k-card{position:absolute;left:50%;transform:translateX(-50%);top:10px;width:min(440px,calc(100% - 24px));z-index:5;background:rgba(6,16,40,.92);border:1px solid #3aa0ff;border-radius:12px;padding:10px 12px;color:#e8f3ff;font-size:.9rem;line-height:1.35;box-shadow:0 0 18px rgba(60,160,255,.4)}
-  .k-card .k-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.k-card button{background:#10305a;color:#e8f3ff;border:1px solid #3aa0ff;border-radius:8px;padding:6px 10px;font-size:.85rem;cursor:pointer}.k-card button.k-go{background:#ff6a1a;border-color:#ff9a5a;color:#fff;font-weight:700}
+  .k-card{position:absolute;left:50%;transform:translateX(-50%);bottom:26px;width:min(430px,calc(100% - 16px));font-size:.82rem !important;z-index:5;background:rgba(6,16,40,.92);border:1px solid #3aa0ff;border-radius:12px;padding:8px 10px;color:#e8f3ff;line-height:1.3;box-shadow:0 0 18px rgba(60,160,255,.4)}
+  .k-card .k-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}.k-card button{background:#10305a;color:#e8f3ff;border:1px solid #3aa0ff;border-radius:8px;padding:6px 10px;font-size:.85rem;cursor:pointer}.k-card button.k-go{background:#ff6a1a;border-color:#ff9a5a;color:#fff;font-weight:700}
   .k-card small{display:block;opacity:.65;margin-top:6px;font-size:.7rem}.k-dots{display:flex;gap:6px;margin-top:6px}.k-dots i{width:34px;height:6px;border-radius:3px;background:#27406a}.k-dots i.a{background:#ffb04a}.k-dots i.d{background:#4ade80}
   .k-credit{position:absolute;right:10px;bottom:6px;z-index:3;font-size:9px;color:rgba(190,215,255,.55);pointer-events:none}
   .k-holo .leg-tag{display:none}`;
