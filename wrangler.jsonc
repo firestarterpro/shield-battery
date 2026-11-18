@@ -9,5 +9,8 @@
     { "binding": "DB", "database_name": "shield-battery", "database_id": "48d293ac-f150-446e-9795-44f0a5d90d60" }
   ],
   "vars": { "SITE_PASSWORD": "Dunnage" },
-  "routes": [ { "pattern": "foot.templararchives.org", "custom_domain": true } ]
+  "routes": [
+    { "pattern": "foot.templararchives.org", "custom_domain": true },
+    { "pattern": "knee.templararchives.org", "custom_domain": true }
+  ]
 }
