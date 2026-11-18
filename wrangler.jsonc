@@ -6,8 +6,8 @@
   "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
   "d1_databases": [
     // database_id is filled in after: npx wrangler d1 create shield-battery
-    { "binding": "DB", "database_name": "shield-battery", "database_id": "00000000-0000-0000-0000-000000000000" }
+    { "binding": "DB", "database_name": "shield-battery", "database_id": "48d293ac-f150-446e-9795-44f0a5d90d60" }
   ],
   "vars": { "SITE_PASSWORD": "Dunnage" },
-  // routes added at deploy
+  "routes": [ { "pattern": "foot.templararchives.org", "custom_domain": true } ]
 }
