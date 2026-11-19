@@ -7,5 +7,6 @@ function start() {
     const t = document.getElementById("leg-tag"); if (t) t.textContent = "The 3D model couldn't load on this device.";
   });
 }
+window.addEventListener("sb:knee-open", start);
 window.addEventListener("sb:rehab-open", start);
-if (location.hash === "#rehab") start();
+if (location.hash === "#knee") start();
